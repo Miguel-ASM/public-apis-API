@@ -1,0 +1,22 @@
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:8.9.2
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+  etls:
+    working_dir: /srv
+    volumes:
+      - ./:/srv
+    build:
+      context: ./
+    ports:
+      - "0.0.0.0:5000:5000"
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+    command: bash -c "pip install -r requirements.txt && flask run --debug --host=0.0.0.0 -p 5000"
+
