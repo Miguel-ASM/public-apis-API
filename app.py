@@ -26,7 +26,7 @@ migrate.init_app(app, db)
 def home():
     examples = ['videogames and comics', 'movies or series', 'natural sciences']
     query = request.args.get('query')
-    page = int(request.args.get('page',1))
+    page = int(request.args.get('page') or 1)
 
     if query is None:
         return render_template('index.html',context={'results':[]},examples = examples)

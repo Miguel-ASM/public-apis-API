@@ -5,7 +5,7 @@ class ApiResource(Resource):
   def get(self):
 
     query = request.args.get('query')
-    page = int(request.args.get('page',1))
+    page = int(request.args.get('page') or 1)
 
     if query is None:
       return {
