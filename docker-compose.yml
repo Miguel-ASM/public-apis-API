@@ -1,13 +1,5 @@
-version: '3'
+version: "3"
 services:
-  elasticsearch:
-    image: elasticsearch:8.9.2
-    ports:
-      - 9200:9200
-      - 9300:9300
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
   etls:
     working_dir: /srv
     volumes:
@@ -17,6 +9,13 @@ services:
     ports:
       - "0.0.0.0:5000:5000"
     environment:
-      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      DB_URL: postgresql://user:pass@db:5432/public_apis_api
     command: bash -c "pip install -r requirements.txt && flask run --debug --host=0.0.0.0 -p 5000"
-
+  db:
+    image: ankane/pgvector
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: public_apis_api
