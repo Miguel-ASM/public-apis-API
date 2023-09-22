@@ -1,7 +1,16 @@
+import os
 from flask import Flask, request, render_template
+from flask_migrate import Migrate
+from flask_restful import Api as RestfulApi
+
 from services.elasticsearch_client import elastic
 from sentence_transformers import SentenceTransformer
+from api import ApiResource
 
+# Create flask app
+app = Flask(__name__,static_folder='public')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Elastic search client
 es = elastic.es
@@ -12,8 +21,16 @@ def getembedding(text):
     return list( model.encode(text) )
 
 
-app = Flask(__name__,static_folder='public')
+api = RestfulApi(app)
+api.add_resource(ApiResource,'/blabla')
 
+
+# Postgres config
+from db import db
+import models
+migrate = Migrate()
+db.init_app(app)
+migrate.init_app(app, db)
 
 @app.get('/api/search')
 def search_apis():
