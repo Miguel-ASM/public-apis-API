@@ -6273,6 +6273,15 @@
         "category": "Geocoding"
     },
     {
+        "name": "ipstack",
+        "url": "https://ipstack.com/",
+        "description": "Locate and identify website visitors by IP address",
+        "auth": "`apiKey`",
+        "https": "Yes",
+        "cors": "Unknown",
+        "category": "Geocoding"
+    },
+    {
         "name": "Kakao Maps",
         "url": "https://apis.map.kakao.com",
         "description": "Kakao Maps provide multiple APIs for Korean maps",
@@ -9256,6 +9265,15 @@
         "url": "https://developers.google.com/photos",
         "description": "Integrate Google Photos with your apps or devices",
         "auth": "`OAuth`",
+        "https": "Yes",
+        "cors": "Unknown",
+        "category": "Photography"
+    },
+    {
+        "name": "Image Upload",
+        "url": "https://apilayer.com/marketplace/image_upload-api",
+        "description": "Image Optimization",
+        "auth": "`apiKey`",
         "https": "Yes",
         "cors": "Unknown",
         "category": "Photography"
