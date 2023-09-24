@@ -22,14 +22,14 @@ def upgrade():
     op.execute("CREATE EXTENSION IF NOT EXISTS vector;")
     op.create_table('apis',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=True),
-    sa.Column('category', sa.String(), nullable=True),
-    sa.Column('description', sa.String(), nullable=True),
-    sa.Column('url', sa.String(), nullable=True),
-    sa.Column('cors', sa.String(), nullable=True),
-    sa.Column('https', sa.String(), nullable=True),
-    sa.Column('auth', sa.String(), nullable=True),
-    sa.Column('embedding', Vector(dim=384), nullable=True),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('category', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('url', sa.String(), nullable=False),
+    sa.Column('cors', sa.String(), nullable=False),
+    sa.Column('https', sa.String(), nullable=False),
+    sa.Column('auth', sa.String(), nullable=False),
+    sa.Column('embedding', Vector(dim=1536), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

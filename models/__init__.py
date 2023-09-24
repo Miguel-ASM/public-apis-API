@@ -11,4 +11,4 @@ class Api(db.Model):
   cors = db.Column(db.String())
   https = db.Column(db.String())
   auth = db.Column(db.String())
-  embedding = db.Column(Vector(384))
+  embedding = db.Column(Vector(1536))
