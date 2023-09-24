@@ -1,7 +1,13 @@
+import os
+import openai
 
-from sentence_transformers import SentenceTransformer
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
-# Transformer for obtaining embeddings from text input
-model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 def getembedding(text):
-    return list( model.encode(text) )
+    embeddings_response = openai.Embedding.create(
+    model="text-embedding-ada-002",
+    input=text
+    )
+    embedding = embeddings_response.get('data')[0].get('embedding')
+    print(len(embedding))
+    return embedding

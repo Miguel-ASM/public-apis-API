@@ -1,8 +1,10 @@
+import os
 import  json
 from pathlib import Path
+
 import openai
 
-openai.api_key = "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"
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 data_dir = Path(__file__).parent.parent.joinpath('data')
 input_file_path = data_dir.joinpath('apis.json')
