@@ -7,8 +7,7 @@ data_dir = Path(__file__).parent.parent.joinpath('data')
 input_file_path = data_dir.joinpath('apis.json')
 output_file_path = data_dir.joinpath('apis-with-embeddings.json')
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
-
+model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 with open(input_file_path) as f:
   apis_list = json.load(f)
 
