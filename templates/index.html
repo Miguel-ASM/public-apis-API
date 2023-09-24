@@ -48,13 +48,23 @@
           An AI-enabled search API for querying the
           <a class="text-indigo-600 hover:opacity-60" href="https://github.com/public-apis/public-apis/tree/master"
             target="_blank" rel="noopener noreferrer">
-            public APIs dataset </a>.
+            public APIs dataset</a>.
         </p>
+        <div class="mt-10 flex items-center justify-center gap-x-6">
+          <a href="#search-section"
+            class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Use
+            the search tool</a>
+          or
+          <a href="#search-api-section"
+            class="border border-black rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">Use
+            the api endpoint
+          </a>
+        </div>
       </div>
     </section>
-    <div class="flex flex-col gap-y-12 w-full lg:px-16">
+    <div class="flex flex-col gap-y-12 w-full lg:px-32">
       <section class="w-full flex flex-col items-center">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-4">
+        <h2 id="search-section" class="text-3xl font-bold tracking-tight text-gray-900 mb-4">
           Search
         </h2>
         <form class="w-full flex gap-x-4" action="/">
@@ -80,7 +90,7 @@
           {% for item in results %}
           <li>
             <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">
-              <div class="rounded shadow-lg h-[200px] flex flex-col justify-between">
+              <div class="rounded-lg shadow-lg h-[200px] flex flex-col justify-between bg-indigo-100">
                 <div class="px-6 py-4">
                   <h3 class="font-bold text-xl mb-2">{{ item.name }}</h3>
                   <p class="text-gray-700 text-base">
@@ -88,8 +98,7 @@
                   </p>
                 </div>
                 <div class="px-6 pt-4 pb-2">
-                  <span
-                    class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{
+                  <span class="inline-block bg-white rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2">{{
                     item.category }}</span>
                 </div>
               </div>
@@ -99,7 +108,7 @@
         </ul>
       </section>
       <section class="w-full flex flex-col items-center">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-4">
+        <h2 id="search-api-section" class="text-3xl font-bold tracking-tight text-gray-900 mb-4">
           API endpoint
         </h2>
         <form id="apiForm" class="w-full flex gap-x-4 mb-4" action="/">
