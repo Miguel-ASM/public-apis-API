@@ -8,6 +8,7 @@ services:
       context: ./
     ports:
       - "0.0.0.0:5000:5000"
+    env_file: .env
     environment:
       DB_URL: postgresql://user:pass@db:5432/public_apis_api
     command: bash -c "pip install -r requirements.txt && flask run --debug --host=0.0.0.0 -p 5000"
