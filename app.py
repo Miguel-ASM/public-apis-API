@@ -38,6 +38,11 @@ def home():
 
     return render_template('index.html', examples = examples, **search_results_data)
 
+
+@app.get('/api/ping')
+def ping():
+    return "digame(lon)",200
+
 # Api endpoint for performing search and obtaining a json response
 api = RestfulApi(app)
 api.add_resource(ApiResource,'/api/search')
