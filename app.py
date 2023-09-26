@@ -11,6 +11,7 @@ from services.search_apis import search
 app = Flask(__name__,static_folder='public')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping':True}
 
 
 # Postgres config
