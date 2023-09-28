@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, request, render_template
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api as RestfulApi
 from api import ApiResource
@@ -13,6 +14,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_pre_ping':True}
 
+
+# CORS
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Postgres config
 from db import db
