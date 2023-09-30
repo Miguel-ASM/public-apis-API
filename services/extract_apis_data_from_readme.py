@@ -23,6 +23,7 @@ def extract_data_from_category_item(row):
         x.strip() for x in row.split('|')[1:-1]]
     api_regex_matches = re.match(r'\[(.*)\]\((.*)\)', api)
     name, url = api_regex_matches.group(1), api_regex_matches.group(2)
+    auth = cleanauthstring(auth)
     return {
         'name': name,
         'url': url,
@@ -38,6 +39,8 @@ def get_items_from_rows(category, rows):
         clean_category_block_content(rows).split('\n')
     )
 
+def cleanauthstring(value):
+    return value.replace('`','')
 
 def clean_category_block_content(x):
     return x.replace(
