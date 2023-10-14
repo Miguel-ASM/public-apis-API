@@ -4,7 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api as RestfulApi
-from api import ApiResource
+from api import ApiResource, CategoriesResource
 
 
 # Create flask app
@@ -28,6 +28,11 @@ migrate.init_app(app, db)
 def ping():
     return "digame(lon)",200
 
-# Api endpoint for performing search and obtaining a json response
+# All the api endpoints are added to the api object
 api = RestfulApi(app)
+
+# Api endpoint for performing search and obtaining a json response
 api.add_resource(ApiResource,'/api/search')
+
+# Api endpoint for obtaining all api categories
+api.add_resource(CategoriesResource,'/api/categories')
