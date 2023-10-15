@@ -9,5 +9,4 @@ def getembedding(text):
     input=text
     )
     embedding = embeddings_response.get('data')[0].get('embedding')
-    print(len(embedding))
     return embedding
