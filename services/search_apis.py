@@ -4,24 +4,13 @@ from db import db
 from models import Api
 from services.embedding import getembedding
 
-def score(cosine_distance):
-  return 1. - 0.5 * cosine_distance
-
-def apiItemSerializer(item):
-  item_dict = dict(item._mapping)
-  cosine_distance = item_dict.pop('cosine_distance')
-  return {
-    **item_dict,
-    'score':score(cosine_distance)
-  }
+MAX_COSINE_DISTANCE = 0.22
+MAX_RESULTS_PER_PAGE = 10
 
 def search(query,page = 1):
   if query is None: raise ValueError('A query must be provided.')
   embedding = getembedding(query)
-  MAX_COSINE_DISTANCE = 0.8
-  MAX_RESULTS_PER_PAGE = 10
   results_query = select(
-      Api.embedding.cosine_distance( embedding ).label('cosine_distance'),
       Api.name,
       Api.category,
       Api.url,
@@ -32,7 +21,7 @@ def search(query,page = 1):
   ).where( 
       Api.embedding.cosine_distance( embedding ) < MAX_COSINE_DISTANCE 
   ).order_by( 
-    "cosine_distance"
+    Api.embedding.cosine_distance( embedding )
   ).offset(
       MAX_RESULTS_PER_PAGE * ( page - 1 )
   ).limit( MAX_RESULTS_PER_PAGE )
@@ -46,12 +35,11 @@ def search(query,page = 1):
   total_hits = db.session.scalar(total_hits_count_query)
 
   result_rows = db.session.execute(results_query)
-  apis_data = [
-      apiItemSerializer(x) for x in result_rows
-  ]
+  apis_data = [ x._asdict() for x in result_rows ]
 
   return {
       'total_hits': total_hits ,
       'page_size': MAX_RESULTS_PER_PAGE,
+      'page': page,
       'results': apis_data
   }
