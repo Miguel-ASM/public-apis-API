@@ -17,6 +17,5 @@ class Api(db.Model):
 class ApisRepoCommit(db.Model):
   __tablename__ = 'apis_repo_commits'
   id = db.Column(db.Integer, primary_key=True)
-  sha = db.Column(db.String(), nullable=False )
-  created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-  updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+  sha = db.Column(db.String(), nullable=False, unique=True )
+  commit_timestamp = db.Column(db.DateTime, nullable=False)

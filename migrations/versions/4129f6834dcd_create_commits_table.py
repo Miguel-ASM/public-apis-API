@@ -21,9 +21,9 @@ def upgrade():
     op.create_table('apis_repo_commits',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('sha', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('commit_timestamp', sa.DateTime(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('sha')
     )
     # ### end Alembic commands ###
 
