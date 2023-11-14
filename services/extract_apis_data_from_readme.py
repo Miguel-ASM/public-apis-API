@@ -64,6 +64,10 @@ def parsereadmetext(text):
     parsed_data_flat = list( itertools.chain.from_iterable( [x for x in parsed_data] ) )
     return parsed_data_flat
 
+def crawl_apis_from_repo(commit_sha=None):
+    text = fetchreadme(commit_sha)
+    return parsereadmetext(text)
+
 def main():
     data_dir = Path(__file__).parent.parent.joinpath('data')
     output_file_path = data_dir.joinpath('apis.json')

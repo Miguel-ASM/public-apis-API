@@ -1,49 +1,72 @@
-# In the db, there is a table for keeping a record of the latest commit hash in the public apis repo.
-# Every day I will run a job that checks if the last commit in the db is different from the current commit in the repo.
-# If they hashes are equal then the job has finished.
-# If they don't match then I will fetch and parse the contents of the readmes of my the last commit and the repos current commit.
-# If they are equal, I just keep the record of the last commit and finish the job.
+from sqlalchemy import insert, select, delete
 
-import requests
-import os
-import re
-import json
-from services.extract_apis_data_from_readme import parsereadmetext
-from services.crawl_public_apis_data import fetchreadme
+from db import db
+from models import ApisRepoCommit, Api
+from app import app
+from services.embedding import getembeddings
+from services.public_apis_github_repo_service import getlastcommitdata, getapischangesinapisrepo
+from services.extract_apis_data_from_readme import crawl_apis_from_repo
+from dateutil import parser as date_parser
 from utils.iter import find
 
-GITHUB_API_TOKEN = os.getenv('GITHUB_API_TOKEN')
+@app.cli.command()
+def update_apis_table():
+  last_commit_in_db = db.session.execute(
+    select(ApisRepoCommit) \
+    .order_by( ApisRepoCommit.commit_timestamp.desc() )
+    .limit(1)
+  ).scalar()
+  last_commit_in_db_sha = last_commit_in_db.sha
+  repo_current_last_commit = getlastcommitdata()
+  repo_current_last_commit_sha = repo_current_last_commit.get('sha')
+
+  if repo_current_last_commit_sha == last_commit_in_db_sha: return
+
+  apis_changes = getapischangesinapisrepo(last_commit_in_db_sha,repo_current_last_commit_sha)
 
 
-repo = 'public-apis'
-github_user = 'public-apis'
+  added_apis = apis_changes.get('added')
+  removed_apis = apis_changes.get('removed')
 
-url = f"https://api.github.com/repos/{github_user}/{repo}/compare/aac6b00424df8fa35b9fce3a4c319e71a6062887...master"
- 
+  # Complete APIs data with categories and embeddings
 
-headers = {
-  "Authorization": GITHUB_API_TOKEN,
-  "Accept": "application/vnd.github+json",
-  "X-GitHub-Api-Version": "2022-11-28"
-}
+  # Categories
+  apis_in_latest_version_dict = dict(
+    [ (x['url'],x) for x in crawl_apis_from_repo(repo_current_last_commit_sha) ]
+  )
+  apis_to_add = [
+    api | {'category': apis_in_latest_version_dict[ api['url'] ]['category'] }
+    for api in added_apis if apis_in_latest_version_dict.get(api['url'])
+  ]
 
+  # Embeddings
+  embeddings_iter = getembeddings([x['description'] for x in apis_to_add ])
+  apis_to_add = [
+    api | {'embedding': embedding }
+    for api, embedding in zip(apis_to_add,embeddings_iter)
+  ]
+  
+  # Now perform the DB operations
+  # Delete APIs that were removed from the repo
+  db.session.execute(
+    delete(Api).where( 
+      Api.url.in_( [x['url'] for x in removed_apis ] )
+    )
+  )
 
-response = requests.get(url, headers=headers)
-data = response.json()
+  # Add new APIs 
+  db.session.execute(insert(Api),apis_to_add)
 
-readme_file_changes = find(
-  lambda x: x['filename']=='README.md',
-  data['files']
-)
+  # # Keep track of last commit in the repo
+  db.session.execute(
+    insert( ApisRepoCommit ),
+    [
+      {
+        'commit_timestamp': date_parser.parse(repo_current_last_commit['commit']['author']['date']),
+        'sha': repo_current_last_commit_sha
+      }
+    ]
+  )
+  db.session.commit()
 
-readme_file_diff = readme_file_changes.get('patch',None)
-
-
-api_diff_line_regex = r'(?P<diff_type>[\+\-])\| \[(?P<name>.*?)\]\((?P<url>.*?)\) \| (?P<description>.*?) \| (?P<authentication>.*?) \| (?P<https>.*?) \| (?P<cors>.*?) \|'
-
-matches = re.finditer(api_diff_line_regex,readme_file_diff,re.MULTILINE)
-
-
-with open('diff.json','w') as file:
-  json.dump([m.groupdict() for m in matches],file,indent=2)
-
+update_apis_table()

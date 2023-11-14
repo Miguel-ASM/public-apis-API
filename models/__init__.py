@@ -1,6 +1,5 @@
 from db import db
 from pgvector.sqlalchemy import Vector
-from datetime import datetime
 
 class Api(db.Model):
   __tablename__ = 'apis'
