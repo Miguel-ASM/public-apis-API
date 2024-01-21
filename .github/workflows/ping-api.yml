@@ -1,0 +1,12 @@
+# This workflow will ping the API deployed in Render every every 10 minutes. This way we avoid downtime because of the service being inactive for more than 10 minutes.
+# Like this we can have 0 donwtime on render's free tier.
+name: Ping the API every 10 minutes
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+jobs:
+  ping-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use curl to make a GET request to /api/search
+        run: curl "https://public-apis-api.onrender.com/api/search?query=ola"
