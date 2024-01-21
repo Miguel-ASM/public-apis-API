@@ -4,9 +4,13 @@ name: Ping the API every 10 minutes
 on:
   schedule:
     - cron: "*/10 * * * *"
+    - cron: "21 17 * * 3,6"
 jobs:
   ping-api:
     runs-on: ubuntu-latest
     steps:
-      - name: Use curl to make a GET request to /api/search
+      - name: Use curl to make a GET request to /api/search on Monday and Wednesday to keep supabase project active
+        if: github.event.schedule == '21 17 * * 3,6'
         run: curl "https://public-apis-api.onrender.com/api/search?query=ola"
+      - name: Use curl to make a GET request to /api/ping every ten minutes
+        run: curl "https://public-apis-api.onrender.com/api/ping"
