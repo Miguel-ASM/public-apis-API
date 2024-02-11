@@ -3,15 +3,11 @@
 name: Ping the API every 10 minutes
 on:
   schedule:
-    - cron: "*/10 * * * *"
-    - cron: "21 17 * * 3,6"
+    - cron: "5/10 * * * *"
   workflow_dispatch:
 jobs:
   ping-api:
     runs-on: ubuntu-latest
     steps:
-      - name: Use curl to make a GET request to /api/categories on Monday and Wednesday to keep supabase project active
-        if: github.event.schedule == '21 17 * * 3,6'
+      - name: Use curl to make a GET request to /api/categories to keep supabase and render projects active
         run: curl "https://public-apis-api.onrender.com/api/categories"
-      - name: Use curl to make a GET request to /api/ping every ten minutes
-        run: curl "https://public-apis-api.onrender.com/api/ping"
