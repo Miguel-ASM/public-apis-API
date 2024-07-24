@@ -1,9 +1,9 @@
-# This workflow will ping the API deployed in Render every every 10 minutes. This way we avoid downtime because of the service being inactive for more than 10 minutes.
+# This workflow will ping the API deployed in Render every every 5 minutes. This way we avoid downtime because of the service being inactive for more than 10 minutes.
 # Like this we can have 0 donwtime on render's free tier.
 name: Ping the API every 10 minutes
 on:
   schedule:
-    - cron: "5/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 jobs:
   ping-api:
